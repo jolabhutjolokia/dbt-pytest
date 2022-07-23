@@ -1,0 +1,6 @@
+{
+  "Id": "{{EXEC_ID}}Contact",
+  "SystemModStamp": "{{SYS_MOD_STAMP}}",
+  "LastModifiedDate": "{{DEFAULT_DATE}}",
+  "Mobile": "{{EXEC_ID}}Mobile"
+}

@@ -18,5 +18,10 @@ clean-targets:         # directories to be removed by `dbt clean`
 
 models:
   dbt:
-    example:
-      +materialized: view
+    core:
+      +materialized: incremental
+    details:
+      +materialized: incremental
+sources:
+
+
