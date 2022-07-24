@@ -36,22 +36,22 @@ def dbt_env_vars(test_time: pendulum.DateTime) -> Dict[str, str]:
 
 
 @pytest.fixture(scope="session")
-def data_configuration(request) -> List[ScenarioData]:
+def scenario_data(request) -> List[ScenarioData]:
     seen = {None}
     session = request.node
-    all_configuration = []
+    all_scenario_data = []
     for item in session.items:
         cls = item.getparent(pytest.Class)
         if cls not in seen:
-            if hasattr(cls.obj, "get_integration_test_data"):
-                all_configuration = all_configuration + cls.obj.get_integration_test_data(default_args, dbt_env_vars)
+            if hasattr(cls.obj, "get_scenario_data"):
+                all_scenario_data = all_scenario_data + cls.obj.get_scenario_data(default_args, dbt_env_vars)
             seen.add(cls)
-    return all_configuration
+    return all_scenario_data
 
 
 @pytest.fixture(scope="session", autouse=True)
 def setup_data_and_run_dbt(db_conn: DbWrapper,
                            default_args: Dict[str, str],
                            dbt_env_vars: Dict[str, str],
-                           data_configuration: List[ScenarioData]):
-    
+                           scenario_data: List[ScenarioData]):
+    data = map(lambda x: x.generate(), scenario_data)

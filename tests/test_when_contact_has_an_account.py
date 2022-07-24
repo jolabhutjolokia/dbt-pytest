@@ -23,9 +23,9 @@ class TestWhenContactHasAnAccount:
     _account_with_contact = None
 
     @classmethod
-    def get_integration_test_data(cls,
-                                  default_args: Dict[str, str],
-                                  dbt_vars: Dict[str, str]) -> List[ScenarioData]:
+    def get_scenario_data(cls,
+                          default_args: Dict[str, str],
+                          dbt_vars: Dict[str, str]) -> List[ScenarioData]:
         cls._default_args = default_args
         cls._dbt_vars = dbt_vars
         token_values = dict({'EXEC_ID': str(uuid4()), **default_args})
