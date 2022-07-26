@@ -1,10 +1,11 @@
+from functools import reduce
 from typing import Dict, List
 
 import pendulum
 import pytest
 
 from tests.test_utils.db_wrapper import DbWrapper
-from tests.test_utils.scenario_data import ScenarioData
+from tests.test_utils.scenario_data import ScenarioData, ExternalTableData
 
 
 @pytest.fixture(scope="session")
@@ -22,7 +23,8 @@ def default_args(test_time: pendulum.DateTime) -> Dict[str, str]:
     return {
         'SYS_MOD_STAMP': test_time.isoformat(),
         'DEFAULT_DATE': test_time.format('YYYY-MM-DD'),
-        'DEFAULT_INT': 100
+        'DEFAULT_INT': 100,
+        'DATE_PARTITION': test_time.isoformat()
     }
 
 
@@ -54,4 +56,8 @@ def setup_data_and_run_dbt(db_conn: DbWrapper,
                            default_args: Dict[str, str],
                            dbt_env_vars: Dict[str, str],
                            scenario_data: List[ScenarioData]):
-    data = map(lambda x: x.generate(), scenario_data)
+    all_external_data: List[ExternalTableData]  = reduce(lambda acc, x:  acc + x.generate(),scenario_data, [])
+    object_names = reduce(lambda acc, x: acc.union({x.object_name()}), all_external_data, set())
+    for object_name in object_names:
+        db_conn.execute_sql(f'CREATE TABLE IF NOT EXISTS "EXT_{object_name}"(date_partition TIMESTAMP, value JSON)')
+    for data_for_tables in data:

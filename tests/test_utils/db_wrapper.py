@@ -16,3 +16,6 @@ class DbWrapper:
 
     def get_data_frame(self, sql: str) -> pandas.DataFrame:
         return pandas.read_sql_query(sql, self._sql_engine)
+
+    def execute_sql(self, sql):
+        print(sql)
