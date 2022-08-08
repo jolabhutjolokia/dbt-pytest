@@ -4,6 +4,7 @@ from typing import Dict, List
 import pendulum
 import pytest
 
+from tests.process_utils import execute_command
 from tests.test_utils.db_wrapper import DbWrapper
 from tests.test_utils.scenario_data import ScenarioData, ExternalTableData
 
@@ -56,8 +57,11 @@ def setup_data_and_run_dbt(db_conn: DbWrapper,
                            default_args: Dict[str, str],
                            dbt_env_vars: Dict[str, str],
                            scenario_data: List[ScenarioData]):
-    all_external_data: List[ExternalTableData]  = reduce(lambda acc, x:  acc + x.generate(),scenario_data, [])
+    all_external_data: List[ExternalTableData] = reduce(lambda acc, x: acc + x.generate(), scenario_data, [])
     object_names = reduce(lambda acc, x: acc.union({x.object_name()}), all_external_data, set())
     for object_name in object_names:
-        db_conn.execute_sql(f'CREATE TABLE IF NOT EXISTS "EXT_{object_name}"(date_partition TIMESTAMP, value JSON)')
-    for data_for_tables in data:
+        db_conn.execute_sql(
+            f'CREATE TABLE IF NOT EXISTS "TEST_EXT.EXT_{object_name}"(date_partition TIMESTAMP, value JSON)')
+    for data_for_tables in all_external_data:
+        db_conn.execute_sql(data_for_tables.insert_sql())
+    execute_command('dbt run', {'IS_TEST_MODE': 'true'})

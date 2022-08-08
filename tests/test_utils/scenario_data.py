@@ -1,3 +1,4 @@
+import json
 from typing import Dict, List
 
 from scenario_builder import ScenarioBuilder
@@ -15,6 +16,10 @@ class ExternalTableData:
 
     def get_value(self, prop: str) -> str:
         return self._data[prop]
+
+    def insert_sql(self):
+        json_str = json.dumps(self._data)
+        return f"Insert into TEST_EXT.EXT_{self._object_name}(date_partition, value) values(date_partition, ('{json_str}')::json)"
 
 
 class ScenarioData:
