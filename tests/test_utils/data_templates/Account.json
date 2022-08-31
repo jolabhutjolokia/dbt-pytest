@@ -2,8 +2,6 @@
   "Id": "{{EXEC_ID}}Account",
   "ContactId": "null",
   "SystemModStamp": "{{SYS_MOD_STAMP}}",
-  "DateOfBirth": "{{DEFAULT_DATE}}",
   "AmountDue": "{{DEFAULT_INT}}",
-  "LastModifiedDate": "{{DEFAULT_DATE}}",
   "DontCareAboutThis": "{{EXEC_ID}}DontCareAboutThis"
 }

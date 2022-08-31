@@ -1,8 +1,0 @@
-version: 2
-
-sources:
-  - name: external
-    description: The tables which are from the external source
-    tables:
-      - name: ext_account
-      - name: ext_contact

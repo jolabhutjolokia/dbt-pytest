@@ -1,0 +1,15 @@
+version: 2
+
+sources:
+  - name: ext
+    schema: "{{ 'test_ext' if env_var('IS_TEST_MODE', 'FALSE') == 'TRUE' else 'public' }}"
+    database: 'postgres'
+    tables:
+      - name: ext_account
+        columns:
+          - name: date_partition
+          - name: value
+      - name: ext_contact
+        columns:
+          - name: date_partition
+          - name: value
