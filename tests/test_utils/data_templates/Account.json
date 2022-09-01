@@ -1,7 +1,6 @@
 {
   "Id": "{{EXEC_ID}}Account",
-  "ContactId": "null",
   "SystemModStamp": "{{SYS_MOD_STAMP}}",
   "AmountDue": "{{DEFAULT_INT}}",
-  "DontCareAboutThis": "{{EXEC_ID}}DontCareAboutThis"
+  "Name": "{{EXEC_ID}}FirstName {{EXEC_ID}}LastName"
 }
