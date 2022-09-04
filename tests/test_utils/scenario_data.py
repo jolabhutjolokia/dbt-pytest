@@ -20,7 +20,8 @@ class ExternalTableData:
     def insert_sql(self):
         json_str = json.dumps(self._data)
         name = self._object_name.lower()
-        return f"Insert into test_ext.ext_{name}(date_partition, value) values(date_partition, ('{json_str}')::json)"
+        date_partition = self._date_partition
+        return f"Insert into test_ext.ext_{name}(date_partition, value) values('{date_partition}', ('{json_str}')::json)"
 
 
 class ScenarioData:
