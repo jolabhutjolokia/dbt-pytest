@@ -61,8 +61,9 @@ def setup_data_and_run_dbt(db_conn: DbWrapper,
     object_names = reduce(lambda acc, x: acc.union({x.object_name()}), all_external_data, set())
     for object_name in object_names:
         db_conn.execute_sql('CREATE SCHEMA IF NOT EXISTS test_ext')
+        lowercase_name = str(object_name).lower()
         db_conn.execute_sql(
-            f'CREATE TABLE IF NOT EXISTS "test_ext.ext_{object_name}"(date_partition TIMESTAMP, value JSON)')
+            f'CREATE TABLE IF NOT EXISTS "test_ext.ext_{lowercase_name}"(date_partition TIMESTAMP, value JSON)')
     for data_for_tables in all_external_data:
         db_conn.execute_sql(data_for_tables.insert_sql())
     execute_command('dbt run', {'IS_TEST_MODE': 'true'})

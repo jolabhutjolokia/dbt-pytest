@@ -7,23 +7,8 @@ from tests.test_utils.file_utils import load_template
 def _fill_tokens_in_template(template: Dict, tokens: Dict[str, str]) -> Dict[str, str]:
     json_str = json.dumps(template)
     for prop in tokens.keys():
-        json_str = json_str.replace(f'{{{prop}}}', tokens[prop])
+        json_str = json_str.replace(f'{{{prop}}}', str(tokens[prop]))
     return json.loads(json_str)
-
-
-def _apply_overrides(template: Dict, overrides: Dict[str, str]) -> Dict[str, str]:
-    template_copy = template.copy()
-    for prop in overrides.keys():
-        template_copy[prop] = overrides[prop]
-    return template_copy
-
-
-def _apply_relationships(template: Dict, relationships: Dict[str, str], tokens: Dict[str, str]) -> Dict[str, str]:
-    template_copy = template.copy()
-    for obj_to_join_to in relationships.keys():
-        fk_prop = relationships[obj_to_join_to]
-        template_copy[fk_prop] = f"{tokens['EXEC_ID']}{obj_to_join_to}"
-    return template_copy
 
 
 class ScenarioBuilder:
@@ -44,11 +29,30 @@ class ScenarioBuilder:
         self._overrides[obj] = overrides
         return self
 
+    def _apply_overrides(self, data: Dict, object_name: str) -> Dict[str, str]:
+        if object_name not in self._overrides.keys():
+            return data
+        data_copy = data.copy()
+        overrides = self._overrides[object_name]
+        for prop in overrides.keys():
+            data_copy[prop] = overrides[prop]
+        return data_copy
+
+    def _apply_relationships(self, data: Dict, object_name: str, tokens: Dict[str, str]) -> Dict[str, str]:
+        if object_name not in self._relationships.keys():
+            return data
+        data_copy = data.copy()
+        relationships = self._relationships[object_name]
+        for obj_to_join_to in relationships.keys():
+            fk_prop = relationships[obj_to_join_to]
+            data_copy[fk_prop] = f"{tokens['EXEC_ID']}{obj_to_join_to}"
+        return data_copy
+
     def build(self, tokens: Dict[str, str]) -> Dict[str, Dict[str, str]]:
         build_data: Dict[str, Dict[str, str]] = {}
         for object_name in self._object_names:
             data = load_template(object_name)
-            data = _apply_overrides(data, self._overrides[object_name])
+            data = self._apply_overrides(data, object_name)
             data = _fill_tokens_in_template(data, tokens)
-            build_data[object_name] = _apply_relationships(data, self._relationships[object_name], tokens)
+            build_data[object_name] = self._apply_relationships(data, object_name, tokens)
         return build_data

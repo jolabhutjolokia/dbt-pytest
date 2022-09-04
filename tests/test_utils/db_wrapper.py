@@ -4,6 +4,7 @@ import sqlalchemy
 
 class DbWrapper:
     _sql_engine = None
+    _conn = None
 
     def __init__(self, host='localhost', user='postgres', password='postgres', database='postgres', port=5432) -> None:
         self._host = host
@@ -27,4 +28,6 @@ class DbWrapper:
     def execute_sql(self, sql: str) -> None:
         print(f"Running query f{sql}")
         text_sql = sqlalchemy.sql.text(sql)
+        if self._conn is None:
+            self.__enter__()
         self._conn.execute(text_sql)
