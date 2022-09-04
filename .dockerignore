@@ -1,0 +1,7 @@
+**/.pytest_cache
+**/.idea
+**/docker-compose.yaml
+**/__pycache__
+**/logs
+**/venv
+**/.user.yml

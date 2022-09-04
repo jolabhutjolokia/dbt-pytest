@@ -1,3 +1,4 @@
+import os
 from functools import reduce
 from typing import Dict, List
 
@@ -59,11 +60,16 @@ def setup_data_and_run_dbt(db_conn: DbWrapper,
                            scenario_data: List[ScenarioData]) -> None:
     all_external_data: List[ExternalTableData] = reduce(lambda acc, x: acc + x.generate(), scenario_data, [])
     object_names = reduce(lambda acc, x: acc.union({x.object_name()}), all_external_data, set())
+
     for object_name in object_names:
         db_conn.execute_sql('CREATE SCHEMA IF NOT EXISTS test_ext')
         lowercase_name = str(object_name).lower()
         db_conn.execute_sql(
             f'CREATE TABLE IF NOT EXISTS test_ext.ext_{lowercase_name}(date_partition TIMESTAMP, value JSON)')
+
     for data_for_tables in all_external_data:
         db_conn.execute_sql(data_for_tables.insert_sql())
-    execute_command('dbt run', {'IS_TEST_MODE': 'true'})
+
+    cwd = os.path.join(os.path.dirname(__file__), '..', 'dbt')
+
+    execute_command('dbt run', {'IS_TEST_MODE': 'true'}, cwd=cwd)

@@ -1,5 +1,0 @@
-models:
-  my_project:
-    external:
-      +schema: "{{ 'TEXT_EXT' if env_var('IS_TEST_MODE', 'FALSE') == 'TRUE' else 'public' }}"
-
