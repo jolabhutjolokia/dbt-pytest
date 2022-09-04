@@ -1,7 +1,7 @@
 import json
 from typing import Dict, List
 
-from scenario_builder import ScenarioBuilder
+from tests.test_utils.scenario_builder import ScenarioBuilder
 
 
 class ExternalTableData:

@@ -2,3 +2,4 @@
 logs
 venv
 .user.yml
+__pycache__

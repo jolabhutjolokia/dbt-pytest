@@ -9,3 +9,7 @@ sources:
         columns:
           - name: date_partition
           - name: value
+      - name: ext_contact
+        columns:
+          - name: date_partition
+          - name: value

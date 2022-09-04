@@ -4,7 +4,7 @@ from typing import Dict, List
 import pendulum
 import pytest
 
-from tests.process_utils import execute_command
+from tests.test_utils.process_utils import execute_command
 from tests.test_utils.db_wrapper import DbWrapper
 from tests.test_utils.scenario_data import ScenarioData, ExternalTableData
 
@@ -39,7 +39,9 @@ def dbt_env_vars(test_time: pendulum.DateTime) -> Dict[str, str]:
 
 
 @pytest.fixture(scope="session")
-def scenario_data(request) -> List[ScenarioData]:
+def scenario_data(default_args: Dict[str, str],
+                  dbt_env_vars: Dict[str, str],
+                  request) -> List[ScenarioData]:
     seen = {None}
     session = request.node
     all_scenario_data = []
@@ -54,8 +56,6 @@ def scenario_data(request) -> List[ScenarioData]:
 
 @pytest.fixture(scope="session", autouse=True)
 def setup_data_and_run_dbt(db_conn: DbWrapper,
-                           default_args: Dict[str, str],
-                           dbt_env_vars: Dict[str, str],
                            scenario_data: List[ScenarioData]) -> None:
     all_external_data: List[ExternalTableData] = reduce(lambda acc, x: acc + x.generate(), scenario_data, [])
     object_names = reduce(lambda acc, x: acc.union({x.object_name()}), all_external_data, set())

@@ -2,3 +2,4 @@ version: 2
 
 models:
   - name: ods_account
+  - name: ods_contact
