@@ -27,7 +27,6 @@ class DbWrapper:
         return pandas.read_sql_query(sql, self._sql_engine)
 
     def execute_sql(self, sql: str) -> None:
-        print(f"Running query f{sql}")
         text_sql = sqlalchemy.sql.text(sql)
         if self._conn is None:
             self.__enter__()
