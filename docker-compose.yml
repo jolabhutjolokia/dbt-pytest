@@ -1,6 +1,7 @@
 version: "3.9"
 services:
   postgres:
+    container_name: postgres
     image: postgres
     environment:
       - POSTGRES_PASSWORD=postgres
@@ -8,17 +9,23 @@ services:
       - POSTGRES_DB=postgres
     ports:
       - "5432:5432"
-    networks:
-      - dbt-tests
-  app:
-    build: .
-    environment:
-      - DB_HOST=dbt-tests
-      - IS_TEST_MODE=TRUE
-    networks:
-      - dbt-tests
+#    networks:
+#      - dbt-tests
+#  app:
+#    container_name: app
+#    stdin_open: true
+#    tty: true
+#    build:
+#      context: .
+#    depends_on:
+#      postgres:
+#        condition: service_started
+#    environment:
+#      - DB_HOST=dbt-tests
+#      - IS_TEST_MODE=TRUE
+#    networks:
+#      - dbt-tests
 
-
-networks:
-  dbt-tests:
-    name: dbt-tests
+#networks:
+#  dbt-tests:
+#    name: dbt-tests

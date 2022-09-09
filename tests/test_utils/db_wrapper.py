@@ -13,6 +13,7 @@ class DbWrapper:
         self._database = database
         self._port = port
         connection_str = f"postgresql://{self._user}:{self._password}@{self._host}:{self._port}/{self._database}"
+        print(f"connection string is: {connection_str}")
         self._sql_engine = sqlalchemy.create_engine(connection_str)
 
     def __enter__(self) -> 'DbWrapper':

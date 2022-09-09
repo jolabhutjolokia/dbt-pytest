@@ -6,4 +6,7 @@ RUN ["pip", "install", "-r", "/app/requirement.txt"]
 
 COPY dbt/ /app/dbt/
 COPY tests/ /app/tests/
+WORKDIR /app
 
+
+#ENTRYPOINT ["pytest"]

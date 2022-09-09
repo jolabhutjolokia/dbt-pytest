@@ -11,9 +11,16 @@ from tests.test_utils.scenario_data import ScenarioData, ExternalTableData
 
 
 @pytest.fixture(scope="session")
-def db_conn() -> DbWrapper:
-    host = os.environ['DB_HOST'] if 'DB_HOST' in os.environ.keys() else 'localhost'
-    return DbWrapper(host=host)
+def dbt_env_vars(test_time: pendulum.DateTime) -> Dict[str, str]:
+    return {
+        'DB_HOST': os.environ['DB_HOST'] if 'DB_HOST' in os.environ.keys() else 'localhost',
+        'IS_TEST_MODE': 'TRUE'
+    }
+
+
+@pytest.fixture(scope="session")
+def db_conn(dbt_env_vars: Dict) -> DbWrapper:
+    return DbWrapper(host=dbt_env_vars['DB_HOST'])
 
 
 @pytest.fixture(scope="session")
@@ -28,15 +35,6 @@ def default_args(test_time: pendulum.DateTime) -> Dict[str, str]:
         'DEFAULT_DATE': test_time.format('YYYY-MM-DD'),
         'DEFAULT_INT': 100,
         'DATE_PARTITION': test_time.isoformat()
-    }
-
-
-@pytest.fixture(scope="session")
-def dbt_env_vars(test_time: pendulum.DateTime) -> Dict[str, str]:
-    return {
-        'SYS_MOD_STAMP': test_time.isoformat(),
-        'DEFAULT_DATE': test_time.format('YYYY-MM-DD'),
-        'DEFAULT_INT': 100
     }
 
 
@@ -58,6 +56,7 @@ def scenario_data(default_args: Dict[str, str],
 
 @pytest.fixture(scope="session", autouse=True)
 def setup_data_and_run_dbt(db_conn: DbWrapper,
+                           dbt_env_vars: Dict[str, str],
                            scenario_data: List[ScenarioData]) -> None:
     all_external_data: List[ExternalTableData] = reduce(lambda acc, x: acc + x.generate(), scenario_data, [])
     object_names = reduce(lambda acc, x: acc.union({x.object_name()}), all_external_data, set())
@@ -73,4 +72,4 @@ def setup_data_and_run_dbt(db_conn: DbWrapper,
 
     cwd = os.path.join(os.path.dirname(__file__), '..', 'dbt')
 
-    execute_command('dbt run', {'IS_TEST_MODE': 'true'}, cwd=cwd)
+    execute_command('dbt run --profiles-dir ./', dbt_env_vars, cwd=cwd)
