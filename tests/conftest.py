@@ -12,7 +12,8 @@ from tests.test_utils.scenario_data import ScenarioData, ExternalTableData
 
 @pytest.fixture(scope="session")
 def db_conn() -> DbWrapper:
-    return DbWrapper()
+    host = os.environ['DB_HOST'] if 'DB_HOST' in os.environ.keys() else 'localhost'
+    return DbWrapper(host=host)
 
 
 @pytest.fixture(scope="session")

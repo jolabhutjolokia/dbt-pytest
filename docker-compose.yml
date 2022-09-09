@@ -10,6 +10,14 @@ services:
       - "5432:5432"
     networks:
       - dbt-tests
+  app:
+    build: .
+    environment:
+      - DB_HOST=dbt-tests
+      - IS_TEST_MODE=TRUE
+    networks:
+      - dbt-tests
+
 
 networks:
   dbt-tests:
