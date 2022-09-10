@@ -1,6 +1,6 @@
 {
-  "Id": "{{EXEC_ID}}Account",
-  "ContactId": "{{EXEC_ID}}Contact",
-  "AmountDue": "{{DEFAULT_INT}}",
-  "SystemModStamp": "{{SYS_MOD_STAMP}}"
+  "Id": "{{ EXEC_ID }}Account",
+  "ContactId": "{{ EXEC_ID }}Contact",
+  "AmountDue": "{{ DEFAULT_INT }}",
+  "SystemModStamp": "{{ SYS_MOD_STAMP }}"
 }

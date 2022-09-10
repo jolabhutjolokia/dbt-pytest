@@ -8,5 +8,4 @@ COPY dbt/ /app/dbt/
 COPY tests/ /app/tests/
 WORKDIR /app
 
-
-#ENTRYPOINT ["pytest"]
+ENTRYPOINT ["pytest"]

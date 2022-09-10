@@ -31,10 +31,10 @@ class TestWhenContactHasAnAccount:
         cls._account_with_contact = ScenarioData(_contact_with_account(), token_values)
         return [cls._account_with_contact]
 
-    def test_account_details_should_be_mapped_correctly(self, db_wrapper: DbWrapper):
+    def test_account_details_should_be_mapped_correctly(self, db_conn: DbWrapper):
         expected_account_id = self._account_with_contact.value_for('Account', 'Id')
 
-        actual = _get_all_account_details(expected_account_id, db_wrapper)
+        actual = _get_all_account_details(expected_account_id, db_conn)
 
         assert len(actual.index) == 1
         assert actual['Mobile'].iloc[0] == self._account_with_contact.value_for('Contact', 'Mobile')
