@@ -27,8 +27,7 @@ class TestWhenContactHasAnAccount:
                           dbt_vars: Dict[str, str]) -> List[ScenarioData]:
         cls._default_args = default_args
         cls._dbt_vars = dbt_vars
-        token_values = {'EXEC_ID': str(uuid4()), **default_args}
-        cls._account_with_contact = ScenarioData(_contact_with_account(), token_values)
+        cls._account_with_contact = ScenarioData(_contact_with_account(), {'EXEC_ID': str(uuid4()), **default_args})
         return [cls._account_with_contact]
 
     def test_account_details_should_be_mapped_correctly(self, db_conn: DbWrapper):
@@ -37,7 +36,7 @@ class TestWhenContactHasAnAccount:
         actual = _get_all_account_details(expected_account_id, db_conn)
 
         assert len(actual.index) == 1
-        assert actual['Mobile'].iloc[0] == self._account_with_contact.value_for('Contact', 'Mobile')
-        assert actual['ContactId'].iloc[0] == self._account_with_contact.value_for('Contact', 'Id')
-        assert actual['AccountId'].iloc[0] == self._account_with_contact.value_for('Account', 'Id')
-        assert actual['AmountDue'].iloc[0] == int(self._account_with_contact.value_for('Account', 'AmountDue'))
+        assert actual['mobile'].iloc[0] == self._account_with_contact.value_for('Contact', 'Mobile')
+        assert actual['contact_id'].iloc[0] == self._account_with_contact.value_for('Contact', 'Id')
+        assert actual['account_id'].iloc[0] == self._account_with_contact.value_for('Account', 'Id')
+        assert actual['amount_due'].iloc[0] == int(self._account_with_contact.value_for('Account', 'AmountDue'))
